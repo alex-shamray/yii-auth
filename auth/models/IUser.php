@@ -19,6 +19,11 @@ interface IUser
 	 */
 	public function activate();
 	/**
+	 * Returns a value indicating whether the user is active.
+	 * @return boolean whether the current application user is active.
+	 */
+	public function getIsActive();
+	/**
 	 * Finds a single active record with the specified username.
 	 * See {@link find()} for detailed explanation about $condition and $params.
 	 * @param mixed $username username value.

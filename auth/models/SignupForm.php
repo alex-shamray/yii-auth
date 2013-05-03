@@ -22,10 +22,11 @@ class SignupForm extends AuthFormModel
 		// will receive user inputs.
 		return array(
 			array('username, email, password', 'required'),
+			array('username', 'match', 'pattern'=>'/^[\w]*$/'),
 			array('username', 'length', 'min'=>3, 'max'=>20),
 			array('password', 'length', 'min'=>5),
 			array('email', 'email'),
-			array('username, email', 'unique', 'className'=>'User'),
+			array('username, email', 'unique', 'className'=>$this->modelClass),
 		);
 	}
 

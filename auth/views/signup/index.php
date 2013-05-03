@@ -1,7 +1,7 @@
 <?php
-/* @var $this SiteController */
+/* @var $this SignupController */
 /* @var $model SignupForm */
-/* @var $form CActiveForm */
+/* @var $form CActiveForm  */
 
 $this->pageTitle=Yii::app()->name . ' - Sign Up';
 $this->breadcrumbs=array(
@@ -11,20 +11,9 @@ $this->breadcrumbs=array(
 
 <h1>Sign Up</h1>
 
-<?php if(Yii::app()->user->hasFlash('signup')): ?>
-
-<div class="flash-success">
-	<?php echo Yii::app()->user->getFlash('signup'); ?>
-</div>
-
-<?php else: ?>
-
-<p>
-If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
-</p>
+<p>Please fill out the following form with your login credentials:</p>
 
 <div class="form">
-
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'signup-form',
 	'enableClientValidation'=>true,
@@ -34,8 +23,6 @@ If you have business inquiries or other questions, please fill out the following
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'username'); ?>
@@ -56,11 +43,8 @@ If you have business inquiries or other questions, please fill out the following
 	</div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Sugn Up'); ?>
+		<?php echo CHtml::submitButton('Sign Up'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
-
 </div><!-- form -->
-
-<?php endif; ?>

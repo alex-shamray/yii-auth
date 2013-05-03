@@ -1,5 +1,5 @@
 <?php
-/* @var $this SiteController */
+/* @var $this RecoverController */
 /* @var $model ResetForm */
 /* @var $form CActiveForm  */
 

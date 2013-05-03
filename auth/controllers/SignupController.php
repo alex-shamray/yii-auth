@@ -3,6 +3,33 @@
 class SignupController extends Controller
 {
 	/**
+	 * @return array action filters
+	 */
+	public function filters()
+	{
+		return array(
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
+
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow',  // allow guest users to perform any action
+				'users'=>array('?'),
+			),
+			array('deny',  // deny authenticated users
+				'users'=>array('@'),
+			),
+		);
+	}
+
+	/**
 	 * Displays the signup page
 	 */
 	public function actionIndex()
@@ -31,8 +58,7 @@ class SignupController extends Controller
 				$message->from=Yii::app()->params['adminEmail'];
 				Yii::app()->mail->send($message);
 
-				Yii::app()->user->setFlash('signup','Thank you for signing us.');
-				$this->refresh();
+				$this->redirect(array('/auth/signup/activate'));
 			}
 		}
 		// display the signup form

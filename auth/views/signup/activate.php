@@ -1,5 +1,5 @@
 <?php
-/* @var $this SiteController */
+/* @var $this SignupController */
 /* @var $model ActivateForm */
 /* @var $form CActiveForm  */
 

@@ -21,7 +21,7 @@ class RecoverForm extends AuthFormModel
 		// will receive user inputs.
 		return array(
 			array('username', 'required'),
-			array('username', 'exist', 'className'=>$this->modelClass),
+			array('username', 'exist'),
 			array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
 		);
 	}
@@ -38,12 +38,27 @@ class RecoverForm extends AuthFormModel
 	}
 
 	/**
+	 * Validates that the username value exists in a table.
+	 * This is the 'exist' validator as declared in rules().
+	 */
+	public function exist($attribute,$params)
+	{
+		if(!$this->hasErrors())
+		{
+			$this->_user=$this->model->findByUsername($this->username);
+			if($this->_user===null)
+				$this->addError('username','Incorrect username or email.');
+		}
+	}
+
+	/**
 	 * Recovers the user's password using the given username in the model.
 	 * @return boolean whether recovery is successful
 	 */
 	public function recover()
 	{
-		$this->_user=$this->model->findByUsername($this->username);
+		if($this->_user===null)
+			$this->_user=$this->model->findByUsername($this->username);
 		if($this->_user!==null)
 		{
 			$this->_user->updateActivationKey();

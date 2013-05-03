@@ -30,4 +30,13 @@ class AuthModule extends CWebModule
 		else
 			return false;
 	}
+
+	/**
+	 * @param string $path the root directory of view files.
+	 * @throws CException if the directory does not exist.
+	 */
+	public function setViewPath($path)
+	{
+		parent::setViewPath(Yii::getPathOfAlias($path));
+	}
 }
