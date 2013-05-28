@@ -54,7 +54,7 @@ class RecoverController extends Controller
 	}
 
 	/**
-	 * Displays the login page
+	 * Displays the reset page
 	 * @param integer $id the ID of the user
 	 * @param string $key the activation key
 	 */

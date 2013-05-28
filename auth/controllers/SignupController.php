@@ -58,7 +58,8 @@ class SignupController extends Controller
 				$message->from=Yii::app()->params['adminEmail'];
 				Yii::app()->mail->send($message);
 
-				$this->redirect(array('/auth/signup/activate'));
+				Yii::app()->user->setFlash('signup','Thank you for signing up.');
+				$this->refresh();
 			}
 		}
 		// display the signup form
@@ -66,28 +67,69 @@ class SignupController extends Controller
 	}
 
 	/**
-	 * Displays the activate page
+	 * Activates a user.
+	 * @param integer $id the ID of the user to be activated
+	 * @param string $key the activation key
 	 */
-	public function actionActivate()
+	public function actionActivate($id,$key)
 	{
-		$model=new ActivateForm;
+		$model=$this->loadModel($id,$key);
+		$model->activate();
+		$model->login();
+
+		$this->redirect($model->getProfileUrl());
+	}
+
+	/**
+	 * Displays the resend page
+	 */
+	public function actionResend()
+	{
+		$model=new ResendForm;
 
 		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='activate-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='resend-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
 
 		// collect user input data
-		if(isset($_POST['ActivateForm']) || count($_GET)>=0)
+		if(isset($_POST['ResendForm']))
 		{
-			$model->attributes=isset($_POST['ActivateForm']) ? $_POST['ActivateForm'] : $_GET;
+			$model->attributes=$_POST['ResendForm'];
 			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->activate())
-				$this->redirect(Yii::app()->user->returnUrl);
+			if($model->validate() && $model->resend())
+			{
+				$message=new YiiMailMessage;
+				$message->view='signup';
+				$message->setBody(array('model'=>$model),'text/html');
+				$message->subject='Sign Up';
+				$message->addTo($model->user->email);
+				$message->from=Yii::app()->params['adminEmail'];
+				Yii::app()->mail->send($message);
+
+				Yii::app()->user->setFlash('resend','Thank you for resending activation code.');
+				$this->refresh();
+			}
 		}
-		// display the activate form
-		$this->render('activate',array('model'=>$model));
+		// display the resend form
+		$this->render('resend',array('model'=>$model));
+	}
+
+	/**
+	 * Returns the data model based on the primary key given in the GET variable.
+	 * If the data model is not found, an HTTP exception will be raised.
+	 * @param integer $id the ID of the model to be loaded
+	 * @param string $key the activation key
+	 * @return IUser the loaded model
+	 * @throws CHttpException
+	 */
+	public function loadModel($id,$key)
+	{
+		$model=ActiveRecord::model($this->module->modelClass)->findByPk($id);
+		if($model===null || !$model->validateActivationKey($key))
+			throw new CHttpException(404,'The requested page does not exist.');
+		return $model;
 	}
 }
